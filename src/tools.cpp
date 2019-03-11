@@ -31,11 +31,11 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
   {
 	// accumulate squared residuals
 	VectorXd res;
-
 	for (size_t i=0; i < estimations.size(); i++)
 	{
 	  res = estimations.at(i) - ground_truth.at(i);
-	  rmse += res*res;
+	  for (size_t k=0; k < 4; k++)
+        rmse[k] += res[k] * res[k];
 	}
 
 	// Calc mean & sqrt

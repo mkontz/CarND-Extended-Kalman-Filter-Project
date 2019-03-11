@@ -30,7 +30,6 @@ void KalmanFilter::Predict() {
     // KF Prediction step
     x_ = F_ * x_;
     P_ = F_ * P_ * F_.transpose() + Q_;
-
 }
 
 void KalmanFilter::Update(const VectorXd &z) {
@@ -63,7 +62,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   **/
 
   // Temporary vectors and matrices
-  VectorXd h_x;
+  VectorXd h_x(3);
   VectorXd e;
   MatrixXd S;
   MatrixXd K;

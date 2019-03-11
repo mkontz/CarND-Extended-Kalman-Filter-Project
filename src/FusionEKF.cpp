@@ -86,8 +86,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
        * Convert radar from polar to cartesian coordinates.
        * Initialize states.
       **/
-      float rho = measurement_pack.raw_measurements_[1];
-      float phi = measurement_pack.raw_measurements_[2];
+      float rho = measurement_pack.raw_measurements_[0];
+      float phi = measurement_pack.raw_measurements_[1];
       float px = rho * cos(phi);
       float py = rho * sin(phi);
 
@@ -97,8 +97,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
       /**
        * Initialize states.
       **/
-      float px = measurement_pack.raw_measurements_[1];
-      float py = measurement_pack.raw_measurements_[2];
+      float px = measurement_pack.raw_measurements_[0];
+      float py = measurement_pack.raw_measurements_[1];
       ekf_.x_ << px, py, 0, 0;
     }
 
@@ -106,6 +106,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
 
     // done initializing, no need to predict or update
     is_initialized_ = true;
+
     return;
   }
 
@@ -167,12 +168,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
     ekf_.R_ = R_radar_;
     ekf_.H_ = tools.CalculateJacobian(ekf_.x_);
 
-    VectorXd z;
-    z << measurement_pack.raw_measurements_[1], // p (rho)
-         measurement_pack.raw_measurements_[2], // phi
-         measurement_pack.raw_measurements_[3]; // d_rho/dt
-
-    ekf_.UpdateEKF(z);
+    ekf_.UpdateEKF(measurement_pack.raw_measurements_);
   }
   else
   {
@@ -187,10 +183,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
     ekf_.R_ = R_laser_;
     ekf_.H_ = H_laser_;
 
-    VectorXd z;
-    z << measurement_pack.raw_measurements_[1], // px
-         measurement_pack.raw_measurements_[2]; // py
-
-    ekf_.Update(z);
+    ekf_.Update(measurement_pack.raw_measurements_);
   }
 }
