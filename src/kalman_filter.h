@@ -46,6 +46,11 @@ class KalmanFilter {
    */
   void UpdateEKF(const Eigen::VectorXd &z);
 
+  /**
+   * This help function force the angle to be between -pi and pi
+   */
+  float CheckAngleRollover(float angle);
+
   // state vector
   Eigen::VectorXd x_;
 
